@@ -132,6 +132,10 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 34px}
 <script>
 const cats=["Nitrile Foam Tape","Stretch Film","POF Shrink Roll","Polythene Bag/roll","Bopp Printed Tape","Bopp Tape Jumbo Roll","Tissue Tape Jumbo","Acrylic Foam Tape Jumbo","Masking Tape Jumbo Roll","S/S Eva Foam Tape Jumbo","Water Activated Tape","Kraft Paper Tape","EPE Foam Roll","Aluminium Foil Tape","Acrylic Foam Tape","D/S Tissue Tape Solvent","HMHD Bag","EPE Foam Bag","Masking Tapes","S/S Eva Foam Tape","Bubble Bags","D/S Tissue Tape Hotmelt","BOPP Tapes"];
 const $=id=>document.getElementById(id);
+// ===== PASTE YOUR n8n WEBHOOK URL HERE =====
+const WEBHOOK_URL='PASTE_YOUR_N8N_WEBHOOK_URL_HERE';
+// customer's WhatsApp number comes from the link: ...index.html?wa=91XXXXXXXXXX
+const WA_NUMBER=new URLSearchParams(location.search).get('wa')||'';
 cats.forEach(c=>{const o=document.createElement('option');o.textContent=c;$('category').appendChild(o)});
 $('date').min=new Date().toISOString().split('T')[0];
 const thickVal=()=>$('thick').value==='Other'?$('thickOther').value.trim():$('thick').value;
@@ -148,6 +152,24 @@ $('f').addEventListener('submit',e=>{
   const d=new Date($('date').value).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
   const data=[['Company',$('company').value],['Contact Person',$('person').value],['Category',$('category').value],['Product',$('product').value],['Size',$('size').value||'-'],['Thickness',thickVal()+' micron'],['Quantity',$('qty').value+' '+$('unit').value],['Delivery Location',$('loc').value],['Expected Delivery',d]];
   msg='SELMEX INDUSTRIES PVT. LTD. — Order Request\n'+data.map(r=>r[0]+': '+r[1]).join('\n');
+  // ---- send order to n8n (saved to Google Sheet there) ----
+  const payload={
+    whatsapp_number:WA_NUMBER,
+    company:$('company').value.trim(),
+    contact_person:$('person').value,
+    category:$('category').value,
+    product:$('product').value.trim(),
+    size:$('size').value.trim(),
+    micron:thickVal(),
+    quantity:$('qty').value,
+    unit:$('unit').value,
+    delivery_location:$('loc').value.trim(),
+    expected_date:$('date').value
+  };
+  if(WEBHOOK_URL.startsWith('http')){
+    fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .catch(err=>console.error('n8n send failed',err));
+  }
   $('rows').innerHTML='';
   data.forEach(r=>{const w=document.createElement('div'),t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];w.append(t,v);$('rows').appendChild(w)});
   $('out').classList.add('show');$('out').scrollIntoView({behavior:'smooth',block:'center'});
