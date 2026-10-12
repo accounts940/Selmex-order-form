@@ -133,7 +133,7 @@ footer{text-align:center;color:var(--muted);font-size:13px;padding:0 16px 34px}
 const cats=["Nitrile Foam Tape","Stretch Film","POF Shrink Roll","Polythene Bag/roll","Bopp Printed Tape","Bopp Tape Jumbo Roll","Tissue Tape Jumbo","Acrylic Foam Tape Jumbo","Masking Tape Jumbo Roll","S/S Eva Foam Tape Jumbo","Water Activated Tape","Kraft Paper Tape","EPE Foam Roll","Aluminium Foil Tape","Acrylic Foam Tape","D/S Tissue Tape Solvent","HMHD Bag","EPE Foam Bag","Masking Tapes","S/S Eva Foam Tape","Bubble Bags","D/S Tissue Tape Hotmelt","BOPP Tapes"];
 const $=id=>document.getElementById(id);
 // ===== PASTE YOUR n8n WEBHOOK URL HERE =====
-const WEBHOOK_URL='https://chatbotselmex.app.n8n.cloud/webhook-test/order-form';
+const WEBHOOK_URL='https://chatbotselmex.app.n8n.cloud/webhook/order-form';
 // customer's WhatsApp number comes from the link: ...index.html?wa=91XXXXXXXXXX
 const WA_NUMBER=new URLSearchParams(location.search).get('wa')||'';
 cats.forEach(c=>{const o=document.createElement('option');o.textContent=c;$('category').appendChild(o)});
